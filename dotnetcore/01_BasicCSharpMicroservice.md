@@ -1,4 +1,4 @@
-# PCF Basics with .Net Core 3.x and Redis
+# Basic Microservice with .Net Core 3.x
 
 This exercise will cover the following:
 
