@@ -71,19 +71,17 @@ We're going to use the Express Generator to bootstrap an application.
 1. Create a file in the `services` directory called `hitCounter.js` and set its contents to the following:
 
    ```javascript
-   var hitCounter = (function () {
-       let hitCount = 0;
-       return {
-           reset: function () {
-               hitCount = 0;
-           },
-           increment: function () {
-               return ++hitCount;
-           }
-       };
-   }());
+   let hitCount = 0;
 
-   module.exports = hitCounter;
+   function reset () {
+       hitCount = 0;
+   }
+
+   function increment () {
+       return ++hitCount;
+   }
+
+   module.exports = {reset, increment};
    ```
    This exposes a simple memory based hit counter that can be incremented or reset.
 
@@ -108,6 +106,8 @@ We're going to use the Express Generator to bootstrap an application.
    ```javascript
    var calculatePayment = require('../services/paymentCalculator');
    var hitCounter = require('../services/hitCounter');
+   var instance = process.env.MY_POD_NAME || 'local';
+
    var express = require('express');
    var router = express.Router();
 
@@ -121,9 +121,14 @@ We're going to use the Express Generator to bootstrap an application.
            rate: rate,
            years: years,
            payment: calculatePayment(amount, rate, years),
-           instance: "local",
+           instance: instance,
            count: hitCounter.increment()
        };
+
+       // force the browser to open a new connection
+       // DO NOT do this in production - this is only to
+       // demonstrate load balancing on K8S
+       res.set("Connection", "close");
 
        res.send(answer);
    });
