@@ -50,6 +50,9 @@ Note the instructions state that this method is not for production. That is a ha
    This will expose the container http://localhost:3030. You can use that URL in the traffic similator. What
    happens when you crash the app?
 
+1. Stop the app...
+   1. Get the container ID with `docker ps`
+   1. Stop the container with `docker stop <container_id>`
 
 ## Using Cloud Native Buildpacks and Paketo Buildpacks
 
