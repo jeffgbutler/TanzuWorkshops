@@ -15,6 +15,7 @@ Scripts for workshops on the Tanzu portfolio of productc.
 | ---- | ---- | ---- |
 | [01_BasicMicroservice.md](javascript/01_BasicMicroservice.md) | Create a Simple Microservice           | --- |
 | [02_BuildContainer.md](javascript/02_BuildContainer.md)       | Build a container for the microservice | Cloud Native Buildpacks |
+| [03_Kubernetes.md](javascript/03_Kubernetes.md)       | Run the application in Kubernetes | --- |
 
 ## .Net Core
 
