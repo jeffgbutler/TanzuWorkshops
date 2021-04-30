@@ -28,7 +28,7 @@ This exercise will cover the following:
    mkdir csharp-payment-calculator
    cd csharp-payment-calculator
    dotnet new webapi
-   dotnet add package Swashbuckle.AspNetCore
+   dotnet add package Swashbuckle.AspNetCore -v 6.1.4
    code .
    ```
 1. Run the new web service with `dotnet run` (or just press F5 in Visual Studio/Code), then navigate to https://localhost:5001/WeatherForecast
