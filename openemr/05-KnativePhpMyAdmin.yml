@@ -1,0 +1,15 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+ name: phpmyadmin
+ namespace: openemr
+spec:
+ template:
+  spec:
+   containers:
+   - image: phpmyadmin/phpmyadmin
+     ports:
+     - containerPort: 80
+     env:
+     - name: PMA_HOSTS
+       value: "openemr-mysql-mariadb"
