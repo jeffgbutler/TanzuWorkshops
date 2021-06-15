@@ -1,6 +1,6 @@
 # Installing OpenEMR in vSphere with Tanzu
 
-Description of Installing OpenEMR in vSphere native Kubernetes Clusters.
+Description of installing OpenEMR in vSphere native Kubernetes Clusters.
 
 This work is based on the OpenEMR minikube deployment described here:
 https://github.com/openemr/openemr-devops/tree/master/kubernetes/minikube. Deploying OpenEMR to a single node
@@ -64,6 +64,7 @@ brew install helm
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
+
 kubectl create namespace kubeapps
 ```
 
@@ -82,10 +83,11 @@ pod creation status in the `kubeapps` namespace.
 helm install kubeapps --namespace kubeapps --set frontend.service.type=LoadBalancer bitnami/kubeapps
 ```
 
-Create a simple service acount for interating with Kubeapps (note this is not recommended for production clusters).
+Create a simple service acount for interacting with Kubeapps (note this is not recommended for production clusters).
 
 ```
 kubectl create --namespace default serviceaccount kubeapps-operator
+
 kubectl create clusterrolebinding kubeapps-operator --clusterrole=cluster-admin --serviceaccount=default:kubeapps-operator
 ```
 
@@ -102,7 +104,7 @@ Save the token somewhere convenient for logging in to Kubeapps. The token will l
 eyJhbGciOiJSUzI1NiIsImtpZCI6IlhjZmxzUm1oSFAyUl90R2RPSFhhOW1sY0M2T2lYNGZDVmpVS1ctSWdvWWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6Imt1YmVhcHBzLW9wZXJhdG9yLXRva2VuLTlncDg3Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6Imt1YmVhcHBzLW9wZXJhdG9yIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMTYxMWE0MGQtNmU5MC00NTNmLThiMGQtNTllODhiMWJmMDJlIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6a3ViZWFwcHMtb3BlcmF0b3IifQ.E8n1El-qrDA2AnuLroK_66fvfziVJCTB2X5ScBU3CFYG_9NMhrIYijePvP5-CXpa3wjWYnmH0gNRW-RlFEVLzOP29NJP40s8lcdxkkhAHis_Zm1uXYpye74Ti2IN_HfAkhTSaufWULdTlA1EMbu3mK-WWwh1Uidj9u3_V5sZ-PeLAbv5fVxcP2P3RRPHJ-mglpSG6CH5fsHDmRSs4enjPS_hpRY-WRuELw8Id1B7SsRZKGGwnYH1gaBkCwgTBebLfWzVq9nZOPu_2lAVavyGT7rHg_xOespGY2ygAYQqGTqLAUn1v6EOGz-qz3fsYTd9j_p4gnTKwhS9hescORQzUA
 ```
 
-Get IP address from the kubeapps service:
+Get the IP address of the kubeapps service:
 
 ```
 kubectl get svc kubeapps -n kubeapps
@@ -128,8 +130,8 @@ kubectl apply -f 02-OpenEMRRoleBinding.yml
 ## Install Redis
 
 1. Login to Kubeapps if you are not already logged in
-1. Set the Current context in Kubeapps to the `openemr` namespace
-1. Go th the "Catalog" tabe and search for "redis"
+1. Set the current context in Kubeapps to the `openemr` namespace
+1. Go th the "Catalog" tab and search for "redis"
 1. Choose "redis" - not "redis-cluster"
 1. Choose "Deploy" for the latest version
 1. Change the name to "openemr-redis"
@@ -150,7 +152,7 @@ watch kubectl get all -n openemr
 
 1. Login to Kubeapps if you are not already logged in
 1. Set the Current context in Kubeapps to the `openemr` namespace
-1. Go th the "Catalog" tabe and search for "maria"
+1. Go th the "Catalog" tab and search for "maria"
 1. Choose "mariadb"
 1. Choose "Deploy" for the latest version
 1. Change the name to "openemr-mysql"
@@ -226,6 +228,7 @@ kubectl get service envoy -n contour-external
 Add a wildcard DNS record to your DNS using the IP address and domain you configured (for example, in my setup the IP address is 192.168.139.157 and the DNS entry is "*.mypcp.tanzuathome.net")
 
 
+#### Knative Verification Test (Optional)
 If you want to try a test application to check basic functionality of the cloud native runtimes, run the following:
 
 ```bash
@@ -245,7 +248,7 @@ kn service delete helloworld-go -n openemr
 
 ```bash
 kn service create phpmyadmin -n openemr \
- --image phpmyadmin/phpmyadmin --port 80 --env PMA_HOSTS="openemr-mysql-mariadb"
+   --image phpmyadmin/phpmyadmin --port 80 --env PMA_HOSTS="openemr-mysql-mariadb"
 ```
 
 You can create the same service with the following:
@@ -259,11 +262,11 @@ The service will be available at http://phpmyadmin.openemr.mypcp.tanzuathome.net
 ## Install OpenEMR
 
 OpenEMR is not a fully cloud native application - it requires several volume mounts. This causes issues when trying
-to scale instances on a multi-node cluster. The persistent volume claims in the minikube deployment use an access mode
-of `ReadWriteOnce` - which means that the volume can only be mounted to a single node. This works well in minikube,
+to scale instances on a multi-node cluster. The persistent volume claims in the Minikube deployment use an access mode
+of `ReadWriteOnce` - which means that the volume can only be mounted to a single node. This works well in Minikube,
 but fails in a scaled and multi-node environment. So we need to setup vSphere to allow access mode `ReadWriteMany`.
 This is also the reason that OpenEMR cannot be deployed with Cloud Native Runtimes (Knative) - Knative does not support
-applications with persistent vaolume claims.
+applications with persistent volume claims.
 
 ### Enabling ReadWriteMany Access Mode
 
@@ -278,8 +281,8 @@ https://core.vmware.com/blog/using-readwritemany-volumes-tkg-clusters
 
 1. Add the following DNS records:
 
-   | Name | IP Address |
-   |------|------------|
+   | Name                                        | IP Address     |
+   |---------------------------------------------|----------------|
    | fs1.file-service.tanzubasic.tanzuathome.net | 192.168.138.21 |
    | fs2.file-service.tanzubasic.tanzuathome.net | 192.168.138.22 |
    | fs3.file-service.tanzubasic.tanzuathome.net | 192.168.138.23 |
@@ -289,14 +292,14 @@ https://core.vmware.com/blog/using-readwritemany-volumes-tkg-clusters
 1. Chose "Enable" in the File Service
 1. vSAN File Services Parameters:
 
-   | Parameter | Value |
-   |-----------|-------|
-   | Domain | file-service.tanzubasic.tanzuathome.net |
-   | DNS | 192.168.128.1 |
-   | DNS Suffixes | file-service.tanzubasic.tanzuathome.net |
-   | Network | DVPG-Supervisor-Management-Network |
-   | Subnet Mask | 255.255.255.0 |
-   |Gateway | 192.168.138.1 |
+   | Parameter    | Value                                                        |
+   |--------------|--------------------------------------------------------------|
+   | Domain       | file-service.tanzubasic.tanzuathome.net                      |
+   | DNS          | 192.168.128.1                                                |
+   | DNS Suffixes | file-service.tanzubasic.tanzuathome.net                      |
+   | Network      | DVPG-Supervisor-Management-Network                           |
+   | Subnet Mask  | 255.255.255.0                                                |
+   | Gateway      | 192.168.138.1                                                |
    | IP Addresses | 192.168.138.21 (fs1.file-service.tanzubasic.tanzuathome.net) |
    | IP Addresses | 192.168.138.22 (fs2.file-service.tanzubasic.tanzuathome.net) |
    | IP Addresses | 192.168.138.23 (fs3.file-service.tanzubasic.tanzuathome.net) |
@@ -304,7 +307,7 @@ https://core.vmware.com/blog/using-readwritemany-volumes-tkg-clusters
 1. Once the vSAN File Services are enabled, create a new file share:
    1. Select the cluster
    1. Navigate to Configure>vSAN>File Shares
-   1. Add a new file share called "openemr" and all access from any IP address
+   1. Add a new file share called "openemr" and allow access from any IP address
 
 Once the file share is created, look at the details and obtain the NFS 4.1 export path.
 In my setup this was `fs1.file-service.tanzubasic.tanzuathome.net:/vsanfs/openemr`. You will need this in 
@@ -313,7 +316,7 @@ the next step.
 #### Install the Open Source Provisioner
 
 The file `06-NfsProvisionerValues.yml` contains configuration values for the NFS external provisioner. Alter this
-file with the NFS server and path obtained from the file share you created about.
+file with the NFS server and path obtained from the file share you created above.
 
 Now install the NFS external provisioner with the following commands:
 
