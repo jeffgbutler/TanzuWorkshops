@@ -2,15 +2,19 @@
 
 Description of Installing OpenEMR in vSphere native Kubernetes Clusters.
 
+This work is based on the OpenEMR minikube deployment described here:
+https://github.com/openemr/openemr-devops/tree/master/kubernetes/minikube. Deploying OpenEMR to a single node
+minikube based cluster is relatively easy. Things get a bit more complex when deploying OpenEMR to a multi-node
+cluster or to multiple clusters. Describing and overcoming those issues is one of the goals of this project.
+
 Prerequisite: vSphere 7 with workload management enabled. I'm using a setup based on William Lam's
 nested vSphere environment. Details here: https://github.com/lamw/vsphere-with-tanzu-nsx-advanced-lb-automated-lab-deployment
 
-
 Architectural Goals:
 
-1. MySql, and Redis installed via TAC (Kubeapps)
+1. MySql and Redis installed via TAC (Kubeapps)
 1. phpMyAdmin installed via Tanzu Cloud Native Runtimes (Knative)
-1. OpenEMR installed as a native Kubernetes application
+1. OpenEMR installed as a native Kubernetes application that can be scaled
 
 Initially, we will start with everything in a single cluster. Later we will use two clusters - "data" and "compute" 
 
@@ -106,7 +110,7 @@ kubectl get svc kubeapps -n kubeapps
 
 Go to Kubeapps, sign in with token above: http://192.168.139.156
 
-## OpenEMR Namspace Setup
+## OpenEMR Namespace Setup
 
 Create a namespace for Open EMR called `openemr` with the following command:
 
@@ -201,6 +205,9 @@ brew install kapp ytt kbld
    kubectl apply -f 03-KnativePSP.yml
    ```
 
+   **Important Note:** this applies a very broad pod security policy and is required with cloud native runtimes
+   version 0.2.0. Later versions will use a more restricted PSP, so keep en eye on the release notes.
+
 ### Setup DNS for Knative
 
 Tanzu Cloud Native Runtimes uses Knative serving, Contour, and Envoy. This allows applications deployed
@@ -251,22 +258,102 @@ The service will be available at http://phpmyadmin.openemr.mypcp.tanzuathome.net
 
 ## Install OpenEMR
 
+OpenEMR is not a fully cloud native application - it requires several volume mounts. This causes issues when trying
+to scale instances on a multi-node cluster. The persistent volume claims in the minikube deployment use an access mode
+of `ReadWriteOnce` - which means that the volume can only be mounted to a single node. This works well in minikube,
+but fails in a scaled and multi-node environment. So we need to setup vSphere to allow access mode `ReadWriteMany`.
+This is also the reason that OpenEMR cannot be deployed with Cloud Native Runtimes (Knative) - Knative does not support
+applications with persistent vaolume claims.
+
+### Enabling ReadWriteMany Access Mode
+
+**Important Note:** As of vSphere 7.0U2, Tanzu on vSphere does not support `ReadWriteMany` natively. This capability is
+scheduled to come in vSphere 7.0U3.
+
+This BLOG is extremely helpful in enabling ReadWriteMany for vSphere with an open source tool that will enable
+`ReadWriteMany` persistent volume claims based on an existing NFS server:
+https://core.vmware.com/blog/using-readwritemany-volumes-tkg-clusters
+
+#### Setup the vSAN File Service
+
+1. Add the following DNS records:
+
+   | Name | IP Address |
+   |------|------------|
+   | fs1.file-service.tanzubasic.tanzuathome.net | 192.168.138.21 |
+   | fs2.file-service.tanzubasic.tanzuathome.net | 192.168.138.22 |
+   | fs3.file-service.tanzubasic.tanzuathome.net | 192.168.138.23 |
+
+
+1. Select the cluster, then navigate to Configure>VSAN>Services
+1. Chose "Enable" in the File Service
+1. vSAN File Services Parameters:
+
+   | Parameter | Value |
+   |-----------|-------|
+   | Domain | file-service.tanzubasic.tanzuathome.net |
+   | DNS | 192.168.128.1 |
+   | DNS Suffixes | file-service.tanzubasic.tanzuathome.net |
+   | Network | DVPG-Supervisor-Management-Network |
+   | Subnet Mask | 255.255.255.0 |
+   |Gateway | 192.168.138.1 |
+   | IP Addresses | 192.168.138.21 (fs1.file-service.tanzubasic.tanzuathome.net) |
+   | IP Addresses | 192.168.138.22 (fs2.file-service.tanzubasic.tanzuathome.net) |
+   | IP Addresses | 192.168.138.23 (fs3.file-service.tanzubasic.tanzuathome.net) |
+
+1. Once the vSAN File Services are enabled, create a new file share:
+   1. Select the cluster
+   1. Navigate to Configure>vSAN>File Shares
+   1. Add a new file share called "openemr" and all access from any IP address
+
+Once the file share is created, look at the details and obtain the NFS 4.1 export path.
+In my setup this was `fs1.file-service.tanzubasic.tanzuathome.net:/vsanfs/openemr`. You will need this in 
+the next step.
+
+#### Install the Open Source Provisioner
+
+The file `06-NfsProvisionerValues.yml` contains configuration values for the NFS external provisioner. Alter this
+file with the NFS server and path obtained from the file share you created about.
+
+Now install the NFS external provisioner with the following commands:
+
 ```bash
-kubectl apply -f 06a-OpenEMR.yml \
-              -f 06b-OpenEMR.yml \
-              -f 06c-OpenEMR.yml \
-              -f 06d-OpenEMR.yml \
-              -f 06e-OpenEMR.yml
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+
+helm repo update
+
+kubectl create namespace infra
+
+helm install nfs-subdir-external-provisioner --namespace infra \
+   nfs-subdir-external-provisioner/nfs-subdir-external-provisioner -f 06-NfsProvisionerValues.yml
+```
+
+#### Install OpenEMR
+
+Create the persistent volume claims for OpenEMR:
+
+```bash
+kubectl apply -f 07-OpenEMRPVC.yml
+```
+
+Create the OpenEMR Deployment:
+
+```bash
+kubectl apply -f 08-OpenEMRDeployment.yml
+```
+
+Create the OpenEMR Service:
+
+```bash
+kubectl apply -f 09-OpenEMRService.yml
 ```
 
 ## Teardown
 
 ```bash
-kubectl delete -f 06a-OpenEMR.yml \
-              -f 06b-OpenEMR.yml \
-              -f 06c-OpenEMR.yml \
-              -f 06d-OpenEMR.yml \
-              -f 06e-OpenEMR.yml
+kubectl delete -f 07-OpenEMRPVC.yml \
+              -f 08-OpenEMRDeployment.yml \
+              -f 09-OpenEMRService.yml
 ```
 
 ```bash

@@ -1,0 +1,8 @@
+nfs:
+  server: fs1.file-service.tanzubasic.tanzuathome.net
+  path: /vsanfs/openemr
+storageClass:
+  name: nfs-external
+  accessModes: ReadWriteMany
+podSecurityPolicy:
+  enabled: true

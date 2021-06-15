@@ -6,7 +6,7 @@ metadata:
   name: openemr
   namespace: openemr
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       io.kompose.service: openemr
