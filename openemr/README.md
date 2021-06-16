@@ -351,6 +351,14 @@ Create the OpenEMR Service:
 kubectl apply -f 09-OpenEMRService.yml
 ```
 
+Obtain the IP address of OpenEMR:
+
+```bash
+kubectl get service openemr -n openemr
+```
+
+For me, the external IP address is 192.168.139.158.  Access OpenEMR at https://192.168.139.158. Login with admin/pass.
+
 ## Teardown
 
 ```bash
