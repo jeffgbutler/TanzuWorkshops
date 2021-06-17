@@ -11,4 +11,4 @@ spec:
   - name: "https"
     port: 443
   selector:
-    io.kompose.service: openemr
+    app: openemr

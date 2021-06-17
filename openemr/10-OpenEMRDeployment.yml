@@ -2,20 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    io.kompose.service: openemr
+    app: openemr
   name: openemr
   namespace: openemr
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: openemr
+      app: openemr
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        io.kompose.service: openemr
+        app: openemr
     spec:
       containers:
       - env:

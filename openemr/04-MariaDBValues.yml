@@ -1,0 +1,13 @@
+architecture: "standalone"
+auth:
+  rootPassword: "root"
+first-run:
+  database: ""
+primary:
+  persistence:
+    enabled: false
+secondary:
+  persistence:
+    enabled: false
+serviceAccount:
+  create: false
