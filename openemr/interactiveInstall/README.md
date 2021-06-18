@@ -12,11 +12,11 @@ Initially, we will start with everything in a single cluster. Later we will use 
 
 ## Cluster Creation
 
-Follow the steps outlined in the cluster creation section.
+Follow the steps outlined in the [cluster creation](../clusterCreation) section.
 
 ## Cluster Preperation
 
-Follow the steps outlined in the cluster preperation section.
+Follow the steps outlined in the [cluster preperation](../clusterPreparation) section.
 
 ## Install Kubeapps/Bitnami
 

@@ -11,11 +11,11 @@ Initially, we will start with everything in a single cluster. Later we will use 
 
 ## Cluster Creation
 
-Follow the steps outlined in the cluster creation section.
+Follow the steps outlined in the [cluster creation](../clusterCreation) section.
 
 ## Cluster Preperation
 
-From the cluster preparation section, install the NFS server and create the `openemr` file share.
+From the [cluster preparation](../clusterPreparation) section, install the NFS server and create the `openemr` file share.
 
 ## Installation
 
