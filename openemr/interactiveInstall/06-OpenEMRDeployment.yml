@@ -37,6 +37,13 @@ spec:
           value: "yes"
         image: openemr/openemr:6.0.0
         name: openemr
+        startupProbe:
+          httpGet:
+            path: /interface/login/login.php
+            port: 80
+          periodSeconds: 15
+          failureThreshold: 60
+          initialDelaySeconds: 240
         ports:
         - containerPort: 80
         - containerPort: 443
