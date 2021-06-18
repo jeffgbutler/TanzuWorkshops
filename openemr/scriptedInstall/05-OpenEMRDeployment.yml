@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: openemr
+  name: openemr
+  namespace: openemr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openemr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: openemr
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_HOST
+          value: "openemr-mysql-mariadb"
+        - name: MYSQL_PASS
+          value: "openemr"
+        - name: MYSQL_ROOT_PASS
+          value: "root"
+        - name: MYSQL_USER
+          value: "openemr"
+        - name: OE_PASS
+          value: "pass"
+        - name: OE_USER
+          value: "admin"
+        - name: REDIS_SERVER
+          value: "openemr-redis-master"
+        - name: SWARM_MODE
+          value: "yes"
+        image: openemr/openemr:6.0.0
+        name: openemr
+        startupProbe:
+          httpGet:
+            path: /interface/login/login.php
+            port: 80
+          periodSeconds: 15
+          failureThreshold: 60
+          initialDelaySeconds: 240
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - mountPath: /var/www/localhost/htdocs/openemr/sites
+          name: websitevolume
+        - mountPath: /etc/ssl
+          name: sslvolume
+        - mountPath: /etc/letsencrypt
+          name: letsencryptvolume
+      restartPolicy: Always
+      volumes:
+      - name: websitevolume
+        persistentVolumeClaim:
+          claimName: websitevolume
+      - name: sslvolume
+        persistentVolumeClaim:
+          claimName: sslvolume
+      - name: letsencryptvolume
+        persistentVolumeClaim:
+          claimName: letsencryptvolume

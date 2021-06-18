@@ -1,0 +1,4 @@
+db:
+  host: "openemr-mysql-mariadb"
+service:
+  type: LoadBalancer
