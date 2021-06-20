@@ -1,36 +1,18 @@
-# Cluster Preparation for OpenEMR
+# Create NFS Server and Storage ReadWriteMany Class
 
-In this section will detail requirements for preparing a cluster for OpenEMR in Tanzu for vSphere - also known as Tanzu Kubernetes Grid Service (TKGS).
+This section shows how to create an NFS server on the vSAN installed on vSphere and configure a provisioner for persistent
+volume claims with `ReadWriteMany` access mode on vSphere.
 
-These instructions will accomplish the following:
+Prerequisites:
 
-1. Create a Namespace for OpenEMR
-1. Assign Permissions in the Namespace
-1. Enable ReadWriteMany Access Mode
-
-You should be able to adapt these instructions to other Kubernetes providers relatively easily.
-
-## Namespace
-
-We will install OpenEMR into a Kubernetes namespace called `openemr`. Use the following to create the namespace:
-
-```shell
-kubectl apply -f 01-Namespace.yml
-```
-
-## Permissions
-
-TKGS requires that we assign explicit permission to the default service account to allow it to deploy pods. Execute the
-following to assign TKGS permissions (this step will be different, or perhaps not required, on other Kubernetes distributions):
-
-```shell
-kubectl apply -f 02-RoleBinding.yml
-```
-
-## Enabling ReadWriteMany Access Mode
+1. Helm installed
+1. You must have access to the vSphere console
+1. You must have the ability to create DNS records
+1. You must have access to the Kubernetes cluster (see [cluster creation](../clusterCreation) for instructions on creating
+   a Kubernetes Cluster in vSphere)
 
 OpenEMR is not a fully cloud native application - it requires several persistent volume mounts. This causes issues when trying
-to scale instances on a multi-node cluster. The persistent volume claims in the Minikube deployment use an access mode
+to scale instances on a multi-node cluster. The persistent volume claims in the Minikube example deployment use an access mode
 of `ReadWriteOnce` - which means that the volume can only be mounted to a single node. This works well in Minikube,
 but fails in a scaled and multi-node environment. So we need to setup vSphere to allow access mode `ReadWriteMany`.
 This is also the reason that OpenEMR cannot be deployed with Cloud Native Runtimes (Knative) - Knative does not support
@@ -44,16 +26,20 @@ This BLOG is extremely helpful in enabling ReadWriteMany for vSphere with an ope
 `ReadWriteMany` persistent volume claims based on an existing NFS server:
 https://core.vmware.com/blog/using-readwritemany-volumes-tkg-clusters
 
-### Setup the vSAN File Service
+## Add DNS Records for NFS Servers
 
-1. Add the following DNS records:
+Note: this section and the following assume IP addresses and domain names that are available on my homelab. Modify
+as necessary for your environment.
 
-   | Name                               | IP Address     |
-   |------------------------------------|----------------|
-   | fs1.nfs.tanzubasic.tanzuathome.net | 192.168.138.21 |
-   | fs2.nfs.tanzubasic.tanzuathome.net | 192.168.138.22 |
-   | fs3.nfs.tanzubasic.tanzuathome.net | 192.168.138.23 |
+Add the following DNS records:
 
+| Name                               | IP Address     |
+|------------------------------------|----------------|
+| fs1.nfs.tanzubasic.tanzuathome.net | 192.168.138.21 |
+| fs2.nfs.tanzubasic.tanzuathome.net | 192.168.138.22 |
+| fs3.nfs.tanzubasic.tanzuathome.net | 192.168.138.23 |
+
+## Setup the vSAN File Service
 
 1. Log on to the vCenter where Tanzu Basic is installed (Workload-Cluster in my case)
 1. Select the cluster, then navigate to Configure>VSAN>Services
@@ -78,10 +64,24 @@ https://core.vmware.com/blog/using-readwritemany-volumes-tkg-clusters
    1. Add a new file share called "openemr" and allow access from any IP address
 
 Once the file share is created, look at the details and obtain the NFS 4.1 export path.
-In my setup this was `fs1.nfs.tanzubasic.tanzuathome.net:/vsanfs/openemr`. You will need this in 
-the next step.
+In my setup this was `fs1.nfs.tanzubasic.tanzuathome.net:/vsanfs/openemr`. You will need this information when you configure
+the cluster for OpenEMR.
 
-### Configure the Open Source Provisioner
+## Configure the Open Source Provisioner
 
-The file `03-NfsProvisionerValues.yml` contains configuration values for the NFS external provisioner. Alter this
+The file `01-NfsProvisionerValues.yml` contains configuration values for the NFS external provisioner. Alter this
 file with the NFS server and path obtained from the file share you created above.
+
+```shell
+kubectl create namespace infra
+
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+
+helm repo update
+
+helm install nfs-subdir-external-provisioner --namespace infra nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+ -f 01-NfsProvisionerValues.yml
+```
+
+After these commands execute successfully, there will be a storage class `nfs-external` available for use in your cluster.
+When you create a persistent volume claim using this storage class, the provisioner will create a subdirectory in the NFS share

@@ -4,5 +4,6 @@ nfs:
 storageClass:
   name: nfs-external
   accessModes: ReadWriteMany
+  onDelete: delete
 podSecurityPolicy:
   enabled: true

@@ -10,13 +10,28 @@ Architectural Goals:
 
 Initially, we will start with everything in a single cluster. Later we will use two clusters - "data" and "compute" 
 
-## Cluster Creation
+## Prerequisites
 
-Follow the steps outlined in the [cluster creation](../clusterCreation) section.
+- You must have access to a Kubernetes cluster. If you are using Tanzu on vSphere you can follow the steps outlined
+  in the [cluster creation](../clusterCreation) section.
+- The cluster must have a storage class named `nfs-external` that supports access mode of `ReadWriteMany`. You can
+  follow the steps in the [create NFS provisioner](../createNFS) section for details on how to accomplish this
+  with vSAN on vSphere
 
-## Cluster Preperation
+## Create and Prepare a Namespact for OpenEMR
 
-Follow the steps outlined in the [cluster preperation](../clusterPreparation) section.
+We'll install OpenEMR into a namecpase call `openemr`. Create the namespace with this command:
+
+```shell
+kubectl create Namespace openemr
+```
+
+TKGS requires that we assign explicit permission to the default service account to allow it to deploy pods. Execute the
+following to assign TKGS permissions (this step will be different, or perhaps not required, on other Kubernetes distributions):
+
+```shell
+kubectl apply -f 01-RoleBinding.yml
+```
 
 ## Install Kubeapps/Bitnami
 
@@ -38,7 +53,7 @@ Users - even admin users - have very little authority in TKGS clusters initially
 for Kubeapps before we try to install it. So run the role binding script:
 
 ```bash
-kubectl apply -f 01-KubeappsRoleBindings.yml
+kubectl apply -f 02-KubeappsRoleBindings.yml
 ```
 
 Now install Kubeapps. This command will install Kubeapps in the `kubeapps` namespace and will provision a load balancer for
@@ -163,7 +178,7 @@ brew install kapp ytt kbld
    namespace:
 
    ```bash
-   kubectl apply -f 02-KnativePSP.yml
+   kubectl apply -f 03-KnativePSP.yml
    ```
 
    **Important Note:** this applies a very broad pod security policy and is required with cloud native runtimes
@@ -179,7 +194,7 @@ First, setup a custom domain for Knative serving by modifying and executing `03-
 replace `mypcp.tanzuathome.net` with a DNS name you can control. You will need to add a DNS "A" record for this domain.
 
 ```bash
-kubectl apply -f 03-KnativeCustomDomain.yml
+kubectl apply -f 04-KnativeCustomDomain.yml
 ```
 
 Now find the external IP address of the ingress controller with this command:
@@ -221,7 +236,7 @@ kn service create phpmyadmin -n openemr \
 You can create the same service with the following:
 
 ```bash
-kubectl apply -f 04-KnativePhpMyAdmin.yml
+kubectl apply -f 05-KnativePhpMyAdmin.yml
 ```
 
 The service will be available at http://phpmyadmin.openemr.mypcp.tanzuathome.net (login with root/root)
@@ -233,13 +248,13 @@ First, make sure you have followed the installation steps for creating an NFS se
 Create the persistent volume claims for OpenEMR:
 
 ```bash
-kubectl apply -f 05-OpenEMRPVC.yml
+kubectl apply -f 06-OpenEMRPVC.yml
 ```
 
 Create the OpenEMR Deployment:
 
 ```bash
-kubectl apply -f 06-OpenEMRDeployment.yml
+kubectl apply -f 07-OpenEMRDeployment.yml
 ```
 
 This deploys a single instance of OpenEMR. OpenEMR takes quite a long time to initialize. You can follow progress by tailing the pod logs.
@@ -254,7 +269,7 @@ It takes about 10 minutes to start.
 Create the OpenEMR Service:
 
 ```bash
-kubectl apply -f 07-OpenEMRService.yml
+kubectl apply -f 08-OpenEMRService.yml
 ```
 
 Obtain the IP address of OpenEMR:
