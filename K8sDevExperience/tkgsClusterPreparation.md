@@ -7,6 +7,16 @@ do the following:
 - Install and Configure Kubeapps (Tanzu Application Catalog)
 - Install and Configure Cloud Native Runtimes (Knative)
 
+## Pre-Requisites
+
+A pre-requisite is that you have access to a vSphere cluster where workload management has been enabled. One way to accomplish that
+is to use a nested vSphere 7 environment. William Lam has instructions for creating a nested vSphere environment here:
+https://github.com/lamw/vsphere-with-tanzu-nsx-advanced-lb-automated-lab-deployment. My own environment is based on his
+work with the main differences being the basic networking setup, and I am using more current versions of ESXi and VCenter
+than he describes in his script. Other than that, I am using his script basically as-is.
+
+Also available from William's site are the nested ESXi appliances you will need: https://williamlam.com/nested-virtualization
+
 ## Create a Kubernetes Cluster on TKGS
 
 Using the vSphere UI, create a namespace `test-namespace`.
