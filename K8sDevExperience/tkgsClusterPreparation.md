@@ -161,7 +161,7 @@ so things might change in the future.
 
 1. Accept the installation defaults, then wait for the install to finish (takes a few minutes)
 
-1. Once the installation is finished, you will need to apply a role binding to allow Knative to deploy pods in the `openemr`
+1. Once the installation is finished, you will need to apply a role binding to allow Knative to deploy pods in the `default`
    namespace:
 
    ```bash
