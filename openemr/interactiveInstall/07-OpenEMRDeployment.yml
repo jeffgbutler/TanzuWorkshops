@@ -19,6 +19,8 @@ spec:
     spec:
       containers:
       - env:
+        - name: DOMAIN
+          value: "openemr.tanzuathome.net"
         - name: MYSQL_HOST
           value: "openemr-mysql-mariadb"
         - name: MYSQL_PASS

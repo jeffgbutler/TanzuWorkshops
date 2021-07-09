@@ -251,6 +251,19 @@ Create the persistent volume claims for OpenEMR:
 kubectl apply -f 06-OpenEMRPVC.yml
 ```
 
+After the volume claims have been bound, setup the certificates...
+
+1. `mkdir ~/temp/openemr`
+1. `mount -t nfs fs1.nfs.tanzubasic.tanzuathome.net:/openemr ~/temp/openemr/`
+1. `cd ~/temp/openemr/openemr-letsencryptvolume...`
+1. `mkdir -p live/openemr.tanzuathome.net`
+1. `cd live/openemr.tanzuathome.net`
+1. `sudo cp /etc/letsencrypt/live/tanzuathome.net/fullchain.pem .`
+1. `sudo cp /etc/letsencrypt/live/tanzuathome.net/privkey.pem .`
+1. `cd ~/temp`
+1. `umount ~/temp/openemr`
+
+
 Create the OpenEMR Deployment:
 
 ```bash
@@ -278,7 +291,11 @@ Obtain the IP address of OpenEMR:
 kubectl get service openemr -n openemr
 ```
 
-For me, the external IP address is 192.168.139.158.  Access OpenEMR at https://192.168.139.9. Login with admin/pass.
+For me, the external IP address is 192.168.139.7.
+
+Add a DNS A record for `openemr.tanzuathome.net` at IP 192.168.139.7
+
+Access OpenEMR at https://openemr.tanzuathome.net. Login with admin/pass.
 
 Once OpenEMR is up and running, you can scale the deployment with the following command:
 
