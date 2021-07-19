@@ -261,9 +261,9 @@ kn service create payment-calculator -n cnr-demo \
 
 Hit the app here: http://payment-calculator.cnr-demo.dev.tkgs.tanzuathome.net
 
-Exercise it with the traffic similator here: https://jeffgbutler.github.io/payment-calculator-client/
+Exercise it with the traffic simulator here: https://jeffgbutler.github.io/payment-calculator-client/
 
-Flood it with traffic with Apache Bench (someimes this can cause it to scale up):
+Flood it with traffic with Apache Bench (sometimes this can cause it to scale up):
 
 ```shell
 ab -n 100000 -c 200 "http://payment-calculator.cnr-demo.dev.tkgs.tanzuathome.net/payment?amount=100000&rate=3.5&years=30"
