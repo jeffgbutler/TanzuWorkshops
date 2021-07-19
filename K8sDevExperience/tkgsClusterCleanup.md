@@ -12,8 +12,8 @@ balancer IPs.
 1. Uninstall Cloud Native Runtimes:
 
    ```shell
-   kapp delete -a serverless -n serverless
-   kubectl delete ns serverless
+   kapp delete -a cloud-native-runtimes -n cloud-native-runtimes
+   kubectl delete ns cloud-native-runtimes
    ```
 
 1. Delete any applications you deployed through kubeapps

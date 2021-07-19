@@ -1,11 +1,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: default-knative-psp
+  name: cnr-demo-psp
+  namespace: cnr-demo
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: psp:vmware-system-privileged
+  name: cnr-restricted
 subjects:
 - kind: Group
-  name: system:serviceaccounts:default
+  name: system:serviceaccounts:cnr-demo
