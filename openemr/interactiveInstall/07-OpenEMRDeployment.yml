@@ -37,7 +37,7 @@ spec:
           value: "openemr-redis-master"
         - name: SWARM_MODE
           value: "yes"
-        image: openemr/openemr:6.0.0
+        image: openemr/openemr:6.1.0
         name: openemr
         startupProbe:
           httpGet:
