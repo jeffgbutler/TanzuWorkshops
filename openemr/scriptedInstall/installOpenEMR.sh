@@ -34,7 +34,7 @@ kubectl create -f 07-OpenEMRDeployment.yml
 # OpenEMR can be scaled, but often has issues if the first pod hasn't fully started the initialization sequence before the
 # next pods come online. So the deployment only has a single replica, then we can scale up a bit later. So we'll waith for the
 # first pod to start and then give it 5 seconds to start the initialization sequence before scaling up.
-while [[ $(kubectl -n openemr get pod -l=app=openemr -o 'jsonpath={..status.phase}') != "Running" ]]; do echo "waiting for OpenEMR container to startr" && sleep 1; done
+while [[ $(kubectl -n openemr get pod -l=app=openemr -o 'jsonpath={..status.phase}') != "Running" ]]; do echo "waiting for OpenEMR container to start" && sleep 1; done
 echo "Give the first pod a 5 second head start before scaling up..."
 sleep 5
 kubectl scale deployment openemr -n openemr --replicas=5
