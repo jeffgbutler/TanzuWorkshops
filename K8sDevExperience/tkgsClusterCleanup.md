@@ -9,6 +9,14 @@ balancer IPs.
    kn service delete payment-calculator
    ```
 
+1. Delete any applications you deployed through kubeapps
+
+1. Delete Any Application Name Spaces
+
+   ```shell
+   kubectl delete ns cnr-demo
+   ```
+
 1. Uninstall Cloud Native Runtimes:
 
    ```shell
@@ -16,7 +24,13 @@ balancer IPs.
    kubectl delete ns cloud-native-runtimes
    ```
 
-1. Delete any applications you deployed through kubeapps
+1. Delete the Kapp Controller
+
+   ```shell
+   kapp delete -a kc
+
+   kubectl delete ClusterRoleBinding kapp-controller-psp-role-binding
+   ```
 
 1. Delete Kubeapps:
 

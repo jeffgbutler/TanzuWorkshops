@@ -189,7 +189,7 @@ Tanzu Cloud Native Runtimes uses Knative serving, Contour, and Envoy. This allow
 with Knative to use a standard ingress controller. In this section, we'll setup Knative and DNS so that
 applications deployed with Cloud Native Runtimes will be easily exposed.
 
-First, setup a custom domain for Knative serving by modifying and executing `04-KnativeCustomDomain.yml`. You should
+First, setup a custom domain for Knative serving by modifying and executing `06-KnativeCustomDomain.yml`. You should
 replace `dev.tkgs.tanzuathome.net` with a DNS name you can control. You will need to add a DNS "A" record for this domain.
 
 ```bash
@@ -222,3 +222,59 @@ You can delete the test application with the following:
 ```shell
 kn service delete helloworld-go -n cnr-demo
 ```
+
+## Deploy a Test Application
+
+Now we'll deploy a test application that attaches to Redis. Source for the test application is here: https://github.com/jeffgbutler/java-payment-calculator
+
+### Install Redis with the Kubeapps UI
+
+1. Login to Kubeapps if you are not already logged in
+1. Set the current context in Kubeapps to the `cnr-demo` namespace
+1. Go th the "Catalog" tab and search for "redis"
+1. Choose "redis" - not "redis-cluster"
+1. Choose "Deploy" for the latest version
+1. Change the name to "payment-calculator-redis"
+1. Change the architecture to "standalone"
+1. Disable password authentication
+1. Disable persistence
+1. Switch to the YAML tab
+1. Find the property `serviceAccount:create` and set it to `false`
+1. Hit the "Deploy" button
+
+You can watch the progress with
+
+```shell
+watch kubectl get all -n cnr-demo
+```
+
+### Install the Payment Calculator with Knative
+
+```shell
+kn service create payment-calculator -n cnr-demo \
+--image jeffgbutler/payment-calculator \
+--port 8080 \
+--env spring.redis.host=payment-calculator-redis-master \
+--env spring.redis.port=6379 \
+--env spring.profiles.active=redis
+```
+
+Hit the app here: http://payment-calculator.cnr-demo.dev.tkgs.tanzuathome.net
+
+Exercise it with the traffic similator here: https://jeffgbutler.github.io/payment-calculator-client/
+
+Flood it with traffic with Apache Bench (someimes this can cause it to scale up):
+
+```shell
+ab -n 100000 -c 200 "http://payment-calculator.cnr-demo.dev.tkgs.tanzuathome.net/payment?amount=100000&rate=3.5&years=30"
+```
+
+## Delete the Test Application
+
+Delete the Knative service:
+
+```shell
+kn service delete payment-calculator -n cnr-demo
+```
+
+Delete the Redis instance through the Kubeapps UI.
