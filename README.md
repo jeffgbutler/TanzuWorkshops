@@ -6,6 +6,7 @@ Scripts for workshops on the Tanzu portfolio of productc.
 
 | Script | Description | Tanzu Product |
 | ---- | ---- | ---- |
+| [00_SpringBoot.md](java/00_SpringBoot.md) | Spring Boot Workshop           | Spring Boot                      |
 | [01_BasicMicroservice.md](java/01_BasicMicroservice.md) | Create a Simple Microservice           | Spring Boot                      |
 | [02_BuildContainer.md](java/02_BuildContainer.md)       | Build a container for the microservice | Spring Boot, Tanzu Build Service |
 
