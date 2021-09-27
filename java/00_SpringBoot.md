@@ -40,7 +40,7 @@ This exercise will show the basics of Spring Boot through a few different types 
    - Artifact: `boot-demo`
    - Name, Description, Package Name: accepts the defaults
    - Packaging: Jar
-   Java Version: 11
+   - Java Version: 11
 1. For dependencies, add the following:
     - Spring Web
     - Spring Boot Actuator
@@ -482,9 +482,9 @@ Spring Boot includes tools for building container images. Images are built using
 Cloud native buildpacks are a CNCF project and are now the CNCF recommended method for building container images.
 
 Build a container image using Maven:
-    - (Windows Command Prompt) `mvnw clean spring-boot:build-image`
-    - (Windows Powershell) `.\mvnw clean spring-boot:build-image`
-    - (Mac/Linux) `./mvnw clean spring-boot:build-image`
+   - (Windows Command Prompt) `mvnw clean spring-boot:build-image`
+   - (Windows Powershell) `.\mvnw clean spring-boot:build-image`
+   - (Mac/Linux) `./mvnw clean spring-boot:build-image`
 
 Note that this command requires that Docker is installed on the machine where the command is run.
 
