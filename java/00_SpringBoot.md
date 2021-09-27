@@ -2,9 +2,7 @@
 
 This exercise will show the basics of Spring Boot through a few different types of microservice endpoints.
 
-## Pre-Requisites
-
-### Install an IDE
+## Install Pre-Requisites
 
 1. Install a JDK. We recommend installing JDK version 11. Good options include:
 
@@ -55,16 +53,19 @@ This exercise will show the basics of Spring Boot through a few different types 
     - IntelliJ: File->New->Module From Existing Sources...
     - VS Code: File->Add Folder to Workspace (or just open the folder by navigating to it and entering the command `code .`)
 
-## Configure The Info Actuator
+## Configure The Actuators
 
 1. Open `application.properties` in `src/main/resources`
 1. Add these values:
 
     ```properties
     info.app.name=Spring Boot Demo
-    management.endpoint.health.show-details=Always
-    management.endpoints.web.exposure.include=info,health
+    management.endpoint.health.show-details=ALWAYS
+    management.endpoints.web.exposure.include=*
     ```
+
+    Note: this setting for `management.endpoints.web.exposure.include=*` will expose EVERY actuator endpoint. You probably don't want to do this
+    in a production setting! For production, the default setting is `management.endpoints.web.exposure.include=health`
 
 ## Configure Swagger
 
@@ -118,8 +119,9 @@ This exercise will show the basics of Spring Boot through a few different types 
 
     1. It enables Swagger
     1. It redirects the root URL to the Swagger UI. I find this convenient, but YMMV
-    1. It tells Springfox that we only want to use Swagger for REST controllers. Without this there will be Swagger documentation for
-    other controllers built into Spring such as the redirect controller, and the basic Spring error controller - we usually don't want this.
+    1. It tells Springfox that we only want to use Swagger for REST controllers. Without this there will be Swagger
+       documentation for other controllers built into Spring such as the redirect controller, and the basic Spring
+       error controller - we usually don't want this.
 
 ## Test the Application
 
@@ -157,11 +159,16 @@ In this exercise, we will create a very simple REST endpoint to show the basics 
     }
     ```
 
+    The `@RestController` annotation helps Spring Boot find the controller. It also sets up a lot of basic plumbing like
+    JSON marshalling, error handling, etc.
+
+    The `@GetMapping` annotation defines the URL for thisendpoint - and this one will only respond to an HTTP GET request.
+
 1. Start the application
 1. Test Swagger [http://localhost:8080](http://localhost:8080) - your new endpoint should be in Swagger
 1. You can also test the endpoint by navigating directly to it: [http://localhost:8080/hello](http://localhost:8080/hello)
 
-## Create and Test a Simple Calculator
+## Create and Test a Simple Calculator Endpoint
 
 In this exercise we will create a simple calculator REST endpoint. This exercise will show how Spring dependency injection (DI) works.
 
@@ -218,12 +225,18 @@ In this exercise we will create a simple calculator REST endpoint. This exercise
     ```
 
     This REST controller makes use of the MathService through constructor based dependency injection.
+    The `@RequestMapping` annotation defines a base URL for all the endpoints defined in this class. The `@GetMapping`
+    annotation adds a path to the base URL and declares that this endpoint will be accessed by an HTTP GET request.
+    The `@RequestParam` annotations name the query string parameters that will be mapped to method parameters. Note
+    that Spring Boot will automatically convert Strings to Integers.
+    The full URL for this request is `/math/add?a=X&b=y`
 
 1. Start the application
 1. Test Swagger [http://localhost:8080](http://localhost:8080) - your new endpoint should be in Swagger
 1. You can also test the endpoint by navigating directly to it: [http://localhost:8080/math/add?a=5&b=6](http://localhost:8080/math/add?a=5&b=6)
 
-## Create a Person Repository
+## Create a CRUD Endpoint 
+### Create a Person Repository
 
 1. Create a package `microservice.workshop.bootdemo.model`
 1. Create a class in the new package called `Person`
@@ -269,6 +282,9 @@ In this exercise we will create a simple calculator REST endpoint. This exercise
     }
     ```
 
+    `JpaRepository` is an interface that contains basic CRUD operations. In this case we have added
+    two custom query methods. JPA will generate the appropriate SQL based on the method names.
+
 1. Create a file called `import.sql` in `src/main/resources`. Set the contents to the following:
 
     ```sql
@@ -278,7 +294,12 @@ In this exercise we will create a simple calculator REST endpoint. This exercise
     insert into person(first_name, last_name) values('Betty', 'Rubble');
     ```
 
-## Create a REST Controller
+    On application startup, Spring Boot will create an in-memory database using H2, create a schema based on the `@Entity` beans,
+    and then run this script. This all comes for free when H2 is the only database driver on the class path. This is great for testing.
+    In production, Spring Boot will not run this script by default as there will be a connection to a persistent database like MySQL or
+    PostgreSQL.
+
+### Create a REST Controller for CRUD Operations
 
 1. Create a class in the `microservice.workshop.bootdemo.controller` package called `PersonController`
 1. Set the content of `PersonController` to the following:
@@ -363,7 +384,15 @@ In this exercise we will create a simple calculator REST endpoint. This exercise
     }
     ```
 
-## Unit Tests
+    This controller makes use of the `PersonRepository` to do interaction with the database. Notice the use of the `@Autowired` annotation
+    which is for property-based dependency injection. Spring now recommends using constructor based DI, but you will likely find
+    `@Autowired` annotations in lots of older code bases.
+
+    In this controller you see HTTP request mappings for various methods (GET, POST, DELETE, etc.) You also see `@PathVariable` annotations
+    to pull method variables off a URL path. Finally, notice the use of the `ResponseEntity` - this allows us to set different HTTP return
+    codes and response headers.
+
+### Unit Tests
 
 1. Make a new package `microservice.workshop.bootdemo.controller` in the `src/test/java` tree
 1. Create a class in the new package called `PersonControllerTest`
@@ -436,7 +465,7 @@ In this exercise we will create a simple calculator REST endpoint. This exercise
     }
     ```
 
-## Testing
+### Testing
 
 1. Run the unit tests:
     - (Windows Command Prompt) `mvnw clean test`
@@ -446,3 +475,25 @@ In this exercise we will create a simple calculator REST endpoint. This exercise
 
 1. Start the application
 1. Test Swagger [http://localhost:8080](http://localhost:8080) - your new endpoint should be in Swagger
+
+## Run in Docker
+
+Spring Boot includes tools for building container images. Images are built using Cloud Native Buildpacks (https://buildpacks.io/).
+Cloud native buildpacks are a CNCF project and are now the CNCF recommended method for building container images.
+
+Build a container image using Maven:
+    - (Windows Command Prompt) `mvnw clean spring-boot:build-image`
+    - (Windows Powershell) `.\mvnw clean spring-boot:build-image`
+    - (Mac/Linux) `./mvnw clean spring-boot:build-image`
+
+Note that this command requires that Docker is installed on the machine where the command is run.
+
+By default this will create an image named `boot-demo` (the Maven project name) with version `0.0.1-SNAPSHOT` (the Maven project version).
+
+You can run this image in Docker with the following command:
+
+```shell
+docker run -p 8080:8080 boot-demo:0.0.1-SNAPSHOT
+```
+
+This will run the image in a command window. If you want to run it in the background (as a daemon), use the `-d` flag.
