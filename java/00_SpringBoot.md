@@ -476,6 +476,64 @@ In this exercise we will create a simple calculator REST endpoint. This exercise
 1. Start the application
 1. Test Swagger [http://localhost:8080](http://localhost:8080) - your new endpoint should be in Swagger
 
+## Error Handling
+
+By default, Spring will display a browser based error page for any errors encountered when processing your request. You
+can see this in action by entering a bad request in your browser like http://localhost:8080/math/add?a=3&b=f.
+
+In a REST API it is better to use HTTP error codes than a browser based solution. The browser based default comes
+from the days when Spring MVC was primarily used as a server-side rendering technology. Fortunately it is easy to
+change this behavior.
+
+1. Create a class in the `microservice.workshop.bootdemo.controller` package called `ErrorAdvice`
+1. Set the content of `ErrorAdvice` to the following:
+
+    ```java
+    package microservice.workshop.bootdemo.controller;
+
+    import org.springframework.http.HttpStatus;
+    import org.springframework.web.bind.annotation.ControllerAdvice;
+    import org.springframework.web.bind.annotation.ExceptionHandler;
+    import org.springframework.web.bind.annotation.ResponseBody;
+    import org.springframework.web.bind.annotation.ResponseStatus;
+    import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+    @ControllerAdvice
+    public class ErrorAdvice {
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        @ResponseBody
+        public String invalidArgumentError(MethodArgumentTypeMismatchException e) {
+            return "Invalid arguments: " + e.getMessage();
+        }
+
+        @ExceptionHandler(Exception.class)
+        @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+        @ResponseBody
+        public String generalError(Exception e) {
+            return e.getMessage();
+        }
+    }
+    ```
+
+    This class uses the `@ControllerAdvice` annotation to inform Spring that we want to override some of the default
+    behavior of Spring MVC. This class has two methods:
+
+    - `invalidArgumentError` will be called, and will generate a response, when Spring cannot convert HTTP parameters
+      to the required values for REST calls. This method will return HTTP error code 400 (BAD_REQUEST) and
+      a detail message.
+    - `generalError` will be called, and will generate a response, when any other error occurs. This method will
+      return HTTP error code 500 (INTERNAL_SERVER_ERROR) and a detail message.
+
+1. Start the application, then use curl to send a bad request:
+
+   ```shell
+   curl -i -w '\n' 'http://localhost:8080/math/add?a=5&b=f'
+   ```
+
+   You should see a message about a type conversion error, and HTTP response code 400.
+
 ## Run in Docker
 
 Spring Boot includes tools for building container images. Images are built using Cloud Native Buildpacks (https://buildpacks.io/).
