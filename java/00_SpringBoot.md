@@ -38,7 +38,7 @@ This exercise will show the basics of Spring Boot through a few different types 
    - Spring Boot: the latest version of Spring Boot (2.5.5 at the time of writing)
    - Group: `microservice.workshop`
    - Artifact: `boot-demo`
-   - Name, Description, Package Name: accepts the defaults
+   - Name, Description, Package Name: accept the defaults
    - Packaging: Jar
    - Java Version: 11
 1. For dependencies, add the following:
@@ -79,7 +79,7 @@ This exercise will show the basics of Spring Boot through a few different types 
     </dependency>
     ```
 
-1. Create a class `SwaggerConfiguration` in the `micoservice.workshop.bootdemo` package. Add the following:
+1. Create a class `SwaggerConfiguration` in the `microservice.workshop.bootdemo` package. Add the following:
 
     ```java
     package microservice.workshop.bootdemo;
