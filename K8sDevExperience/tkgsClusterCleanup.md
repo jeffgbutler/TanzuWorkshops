@@ -47,7 +47,7 @@ balancer IPs.
    ```shell
    kubectl vsphere logout
    
-   kubectl vsphere login --server 192.168.139.2 -u administrator@vsphere.local --insecure-skip-tls-verify
+   kubectl vsphere login --server 192.168.139.3 -u administrator@vsphere.local --insecure-skip-tls-verify
 
    kubectl config use-context test-namespace
 
