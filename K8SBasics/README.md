@@ -319,3 +319,44 @@ Access the service at the external IP address shown. In my case is like this:
 curl http://192.168.139.9
 ```
 
+# Deploy a Microservice
+
+For the next exercise, we are going to deploy a microservice that calculates loan payments. This service will also need 
+access to an instance is Redis. Source code for the application is here: https://github.com/jeffgbutler/java-payment-calculator
+
+The application image is on Docker Hub as the address jeffgbutler/payment-calculator
+
+## Deploy Redis
+
+We will deploy a very simple instance of Redis - only one pod with no replica set and no authentication. This is useful for testing, but
+not for production!
+
+```shell
+kubectl -n jgb-namespace run redis --image=redis:6.2.6
+```
+
+```shell
+kubectl -n jgb-namespace expose pod redis --type=ClusterIP --port=6379 --target-port=6379 
+```
+
+## Deploy the Payment Calculator Service
+
+Take a look at [04-PaymentCalculatorDeployment.yaml](04-PaymentCalculatorDeployment.yaml)
+
+Change the namespace in this file to match the namespace you created, then execute it:
+
+```shell
+kubectl apply -f 04-PaymentCalculatorDeployment.yaml
+```
+
+Take a look at [05-PaymentCalculatorService.yaml](05-PaymentCalculatorService.yaml)
+
+Change the namespace in this file to match the namespace you created, then execute it:
+
+```shell
+kubectl apply -f 05-PaymentCalculatorService.yaml
+```
+
+Once the external IP is provisioned, you can access the service in a browser: http://192.168.139.9 in my case.
+
+The default page should show the Swagger UI. You can use the UI to exercise the web service.
