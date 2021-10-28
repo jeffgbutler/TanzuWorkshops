@@ -74,9 +74,9 @@ applications deployed with Cloud Native Runtimes will be easily exposed.
 kubectl edit configmap config-domain -n knative-serving
 ```
 
-Edit the config map and add `cnr.tanzuathome.net: ""` after the `data` element.
+Edit the config map and add `cnr.tanzuathome.net: ""` after the `data` element (indented).
 
-This sets up CNR to route all request that come in to `cnr.tanzuathome.net`.
+This sets up CNR to route all requests that come in to `cnr.tanzuathome.net`.
 
 Now find the external IP address of the ingress controller with this command:
 
@@ -141,10 +141,10 @@ kubectl edit cm  -n knative-serving config-network
 
 Then add the following indented under `data`:
 
+```yaml
 domainTemplate: "{{.Name}}.{{.Domain}}"
 httpProtocol: "Redirected"
-
-
+```
 
 ## Cleanup
 
