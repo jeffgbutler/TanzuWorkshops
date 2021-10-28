@@ -1,0 +1,27 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+kind: TanzuKubernetesCluster
+metadata:
+  name: prod-cluster
+  namespace: test-namespace
+spec:
+  distribution:
+    version: v1.20
+  settings:
+    network:
+      cni:
+        name: antrea
+      pods:
+        cidrBlocks:
+        - 10.1.1.0/22
+      services:
+        cidrBlocks:
+        - 10.1.4.0/22
+  topology:
+    controlPlane:
+      count: 1
+      class: best-effort-medium
+      storageClass: tanzu-gold-storage-policy
+    workers:
+      count: 3
+      class: best-effort-medium
+      storageClass: tanzu-gold-storage-policy
