@@ -64,8 +64,10 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Ind6UjVwRWUxNTVJSFZvZHE3RF95aHZzdHJBNUxja0d1UW14TFRQ
 
 ## Update Pod Security Policies (TKGS Only)
 
-TKGS clusters have very strict pod security policies in place that will limit deployments to the cluster. You can allow
-deployments into any namespace with the following command:
+TKGS clusters have very strict pod security policies in place that will limit deployments to the cluster. Documentation
+regarding pod security policies in TKGS is here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-CD033D1D-BAD2-41C4-A46F-647A560BAEAB.html
+
+You can allow deployments into any namespace with the following command (this may not be appropriate for production clusters):
 
 ```shell
 kubectl create clusterrolebinding default-tkg-admin-privileged-binding \
