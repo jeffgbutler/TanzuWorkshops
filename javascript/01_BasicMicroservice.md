@@ -199,10 +199,12 @@ This is needed to demonstrate Kubernetes' self-healing capabilities.
 1. Add the following statement before the line that uses the index router:
 
    ```javascript
+   var cors = require('cors');
+   
    app.use(cors());
    ```
    This will allow all cross origin requests.
-
+  
 1. Add the following statements after the line that uses the index router:
 
    ```javascript
