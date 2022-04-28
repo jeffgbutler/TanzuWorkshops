@@ -15,6 +15,7 @@ metadata:
   name: default
 spec:
   sources:
+  - image: gcr.io/paketo-buildpacks/dotnet-core
   - image: gcr.io/paketo-buildpacks/java
   - image: gcr.io/paketo-buildpacks/nodejs
 ---
@@ -44,6 +45,8 @@ spec:
     name: default
     kind: ClusterStore
   order:
+  - group:
+    - id: paketo-buildpacks/dotnet-core
   - group:
     - id: paketo-buildpacks/java
   - group:
