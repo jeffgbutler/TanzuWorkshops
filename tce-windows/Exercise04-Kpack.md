@@ -46,7 +46,7 @@ kubectl apply -f 04-kpack-test-image-dotnet.yaml
 You can follow the build with this comand:
 
 ```shell
-kp build logs dotnet-samples
+kp build logs dotnet-sample
 ```
 
 Once the build completes, am image will be published. You can get the full image address with the following command:
