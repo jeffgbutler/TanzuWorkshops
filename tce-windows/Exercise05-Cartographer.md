@@ -1,4 +1,4 @@
-# Exercise 5: COnfigure and Test Cartographer 
+# Exercise 5: Configure and Test Cartographer 
 
 So far we've seen that we can simply build images with Kpack, and we can simply deploy applications with Knative.
 But there's a lot of manual work involved:
@@ -7,7 +7,7 @@ But there's a lot of manual work involved:
 - Once the image is built, we need to retrive the new SHA
 - We need to deploy or update the Knative service with the new image
 
-We have not talked about how the images and applications should be updated if a developer were to commit a code
+We have not talked about how the images and services should be updated if a developer were to commit a code
 change. This seems like a job for automation.
 
 In this exercise, we'll take a look at Cartographer - an open source project build for exactly this purpose.
