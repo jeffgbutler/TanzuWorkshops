@@ -56,7 +56,7 @@ kp image list
 ```
 
 For me, the image was `harbor.tanzuathome.net/tce/dotnet-sample@sha256:f2da339367a7410f6f397288d540465b1446887fc08c727efeb4ddfde8325ae0`.
-Now lets deploy that image with Knative:
+Now lets deploy that image with Knative (you will need to change this command to use the image you built):
 
 ```powershell
 kn service create dotnet-sample `
@@ -68,7 +68,7 @@ Note that we have to specify the image pull secret this time as we are pulling f
 
 You should be able to access the application at http://dotnet-sample.default.127-0-0-1.nip.io/
 
-Once you are finiahed experimenting, you can delete the service with the following command:
+Once you are finished experimenting, you can delete the service with the following command:
 
 ```shell
 kn service delete dotnet-sample
@@ -95,7 +95,7 @@ kp image list
 ```
 
 For me, the image was `harbor.tanzuathome.net/tce/spring-pet-clinic@sha256:57977aa16b7234080a7b9d3fdec2b663d247ee32cc2444add58e2dfd26c51b50`.
-Now lets deploy that image with Knative:
+Now lets deploy that image with Knative (you will need to change this command to use the image you built):
 
 ```powershell
 kn service create spring-pet-clinic `
@@ -107,7 +107,7 @@ Note that we have to specify the image pull secret this time as we are pulling f
 
 You should be able to access the application at http://spring-pet-clinic.default.127-0-0-1.nip.io/
 
-Once you are finiahed experimenting, you can delete the service with the following command:
+Once you are finished experimenting, you can delete the service with the following command:
 
 ```shell
 kn service delete spring-pet-clinic
