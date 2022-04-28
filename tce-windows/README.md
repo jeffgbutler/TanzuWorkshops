@@ -2,6 +2,9 @@
 
 Workshop for Tanzu Community Edition with intructions written specifically for Windows users.
 
+**Important:** this workshop is based on version 0.11.0 or greater of Tanzu Community Edition.
+The instructions will not work if you use earlier versions.
+
 ## Pre-Requisites
 
 Install:
@@ -104,7 +107,7 @@ tanzu package available get cert-manager.community.tanzu.vmware.com/1.6.1 --valu
 ```
 
 This command will show that cert manager version 1.6.1 accepts a single parameter `namespace` and the default
-value is `cert-manager`. Package installs can accept a YAML `values file` that contains configuration parameters.
+value is `cert-manager`. Package installs can accept a YAML "values file" that contains configuration parameters.
 We will see an example of this in the next section.
 
 ## Exercise 3: Configure and Install the App Toolkit
@@ -120,9 +123,9 @@ a group of packages that are relevant to application developers including:
 - Kpack - an image building tool
 - Knative Serving - a Kubernetes framework that simplifies application deployments
 - Cartographer - a tool for creating software supply chains
-- Others
+- Several others
 
-With this exercise will install and configure the app toolkit for use on a local workstation. Take a look
+With this exercise we will install and configure the app toolkit for use on a local workstation. Take a look
 at the file [01-app-toolkit-values.yaml](01-app-toolkit-values.yaml) in this directory. This file contains
 configuration values for several of the packages in the app toolkit (Contour, Knative, and Kpack). For now, the
 important things to know are these:
@@ -159,6 +162,7 @@ Let's deploy Kuard with Knative:
 ```shell
 kn service create kuard --image gcr.io/kuar-demo/kuard-amd64:blue
 ```
+
 Once the command completes, the application should be available at http://kuard.default.127-0-0-1.nip.io/
 
 Take a look at what got created in your cluster:
@@ -167,8 +171,8 @@ Take a look at what got created in your cluster:
 kubectl get all
 ```
 
-You should see pods, services, a deployment, a replica set, and sveral other objects related to Knative. You can see
-that Knative is doing quite a lot with a siple command! Knative has also generated a URL for this application and
+You should see pods, services, a deployment, a replica set, and several other objects related to Knative. You can see
+that Knative is doing quite a lot with a simple command! Knative has also generated a URL for this application and
 configured the ingress controller (Contour in this case). By default, the URL is calculated as
 `app_name.namespace.base_domain` - where `base_domain` is what we configured when we installed the app toolkit
 (`127-0-0-1.nip.io` in this case).
@@ -186,7 +190,7 @@ kn service delete kuard
 
 ### Deploy a Knative Application with Kubectl
 
-The file [02-kuard-service.yaml](02-kuard-service.yaml) in this directory contains YAML for acaiving the
+The file [02-kuard-service.yaml](02-kuard-service.yaml) in this directory contains YAML for acheiving the
 same deployment of Kuard we did above with one exception - we turn off "scale to zero" functionality. This can
 also be accomplished with the CLI (see the `--scale-min` parameter).
 
@@ -198,15 +202,18 @@ kubectl apply -f 02-kuard-service.yaml
 
 The app should be avilable at http://kuard.default.127-0-0-1.nip.io/
 
-Everything should be the same as before except that with this deployment, the app will not scale to zero.
+Everything should be the same as before except that with this deployment the app will not scale to zero.
 
-Once you are finished experimanting, you can delete the service with the CLI as before, or also with Kubectl: 
+Once you are finished experimenting, you can delete the service with the CLI as before, or also with Kubectl: 
 
 ```shell
 kn service delete kuard
 
 kubectl delete -f 02-kuard-service.yaml
 ```
+
+Knative has many features and configuration options. For details see the official documentation
+here: https://knative.dev/docs/
 
 ## Exercise 4: Configure Kpack
 
