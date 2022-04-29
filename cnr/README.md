@@ -132,7 +132,7 @@ kubectl patch configmap config-contour -n knative-serving \
   -p '{"data":{"default-tls-secret":"contour-external/default-cert"}}'
 ```
 
-Configue Knative to aut-redirct HTTP requests to HTTPS, then change the route template
+Configure Knative to auto-redirct HTTP requests to HTTPS, then change the route template
 so that it will work with our single level wildcard.
 
 ```shell
