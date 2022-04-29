@@ -14,4 +14,10 @@ In this lab, we'll show two ways to build images for .Net Core applications:
 
 1. `pack build csharp-payment-calculator --builder paketobuildpacks/builder:full`
 
-1. `docker run -p 8080:8080 -t csharp-payment-calculator`
+1. `docker run -d -p 8080:8080 -t csharp-payment-calculator`
+
+1. Exercise the app at http://localhost:8080
+
+1. Stop the app...
+   1. Get the container ID with `docker ps`
+   1. Stop the container with `docker stop <container_id>`
