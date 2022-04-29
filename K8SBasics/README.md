@@ -23,14 +23,14 @@ like the following:
 
 ```shell
 kubectl vsphere login \
-  --server 192.168.139.3 \
+  --server 192.168.139.2 \
   --tanzu-kubernetes-cluster-namespace test-namespace \
   --tanzu-kubernetes-cluster-name dev-cluster \
   --vsphere-username administrator@vsphere.local \
   --insecure-skip-tls-verify
 ```
 
-In this case, you are logging in to TKGS at IP address `192.168.139.3`. You are using supervisor namespace `test-namespace` and workload
+In this case, you are logging in to TKGS at IP address `192.168.139.2`. You are using supervisor namespace `test-namespace` and workload
 cluster `dev-cluster`. You should change these values to match the values given to you by your administrator.
 
 Once logged in, your Kubectl context should be set to `dev-cluster`. You can verify this with the following command:
