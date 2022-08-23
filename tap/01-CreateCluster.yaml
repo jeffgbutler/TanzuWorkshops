@@ -1,0 +1,22 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+kind: TanzuKubernetesCluster
+metadata:
+  name: tap-cluster
+  namespace: test-namespace
+spec:
+  distribution:
+    version: v1.20
+  settings:
+    network:
+      pods:
+        cidrBlocks:
+        - 10.112.0.0/16
+  topology:
+    controlPlane:
+      count: 3
+      class: best-effort-medium
+      storageClass: tanzu-gold-storage-policy
+    workers:
+      count: 5
+      class: best-effort-medium
+      storageClass: tanzu-gold-storage-policy

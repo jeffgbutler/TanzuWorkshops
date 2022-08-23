@@ -20,8 +20,9 @@ Corresponding GitHub Repo: https://github.com/corrieb/vspherewithtanzudemo/tree/
 
 1. `kubectl config get-contexts` will show two contexts - the IP, and demo-namespace
 1. `kubectl config use-context test-namespace`
-1. `kubectl describe virtualmachineclasses` - shows virtual machins classes available
+1. `kubectl describe virtualmachineclasses` - shows virtual machine classes available
 1. `kubectl describe ns test-namespace` - shows storage classes available
+1. `kubectl describe TkgServiceConfiguration` - show/edit global parameters for TKGS
 1. `kubectl get storageclasses` - also shows storage classes
 1. `kubectl get TanzuKubernetesReleases` - shows what Kubernetes versions are available
 1. `kubectl get VirtualMachineImages` - shows virtual machine images which is similar to Kubernetes versions, but doesn't show upgrade paths
