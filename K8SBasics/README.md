@@ -192,10 +192,10 @@ curl nginx.jgb-namespace.svc.cluster.local
 curl 10.1.6.211
 ```
 
-You can close your terminla session with `exit`. If you want to reattach to the `curl` pod, either of the
+You can close your terminal session with `exit`. If you want to reattach to the `curl` pod, either of the
 following commands will work:
 
-If you want to reatt
+If you want to reattach
 ```shell
 kubectl -n jgb-namespace attach curl -it
 ```
@@ -214,6 +214,9 @@ kubectl -n jgb-namespace delete service nginx
 kubectl -n jgb-namespace delete pod nginx
 ```
 
+```shell
+kubectl -n jgb-namespace delete pod curl
+```
 ## Deployments
 
 Deploying a single pod is useful for basic learning, but we want something more in production. If we deploy an application 
