@@ -1,0 +1,30 @@
+#@ load("@ytt:data", "data")
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-calculator
+  namespace: #@ data.values.namespace
+  labels:
+    app: payment-calculator
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: payment-calculator
+  template:
+    metadata:
+      labels:
+        app: payment-calculator
+    spec:
+      containers:
+        - name: payment-calculator
+          image: jeffgbutler/payment-calculator
+          ports:
+            - containerPort: 8080
+          env:
+            - name: spring.redis.host
+              value: redis
+            - name: spring.redis.port
+              value: "6379"
+            - name: spring.profiles.active
+              value: redis

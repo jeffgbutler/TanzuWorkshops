@@ -1,0 +1,14 @@
+#@ load("@ytt:data", "data")
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-calculator
+  namespace: #@ data.values.namespace
+spec:
+  selector:
+    app: payment-calculator
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
