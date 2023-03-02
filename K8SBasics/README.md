@@ -70,7 +70,7 @@ kubectl create namespace jgb-namespace
 ## Deploy a Pod
 
 ```shell
-kubectl run nginx --image=nginx -n jgb-namespace
+kubectl -n jgb-namespace run nginx --image=nginx
 ```
 
 This deploys a single pod containing the nginx image.
@@ -84,14 +84,14 @@ This deploys a single pod containing the nginx image.
 ## Expose a Pod with Cluster IP
 
 ```shell
-kubectl expose pod nginx --type=ClusterIP --port=80 -n jgb-namespace
+kubectl -n jgb-namespace expose pod nginx --type=ClusterIP --port=80
 ```
 
 This gives the pod a reliable IP on the cluster's internal services network. You can find the IP address
 with the following:
 
 ```shell
-kubectl get all -n jgb-namespace
+kubectl -n jgb-namespace get all
 ```
 
 I got `10.1.6.211` in my cluster.
@@ -168,7 +168,7 @@ to an environment inside the cluster. One easy way to do this is to deploy a pod
 shell in the pod:
 
 ```shell
-kubectl run -it busybox --image=busybox -n jgb-namespace -- sh
+kubectl -n jgb-namespace run -it busybox --image=busybox -- sh
 ```
 
 This will deploy a container named `busybox` using the `busybox` image. It will open a shell session
