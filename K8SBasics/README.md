@@ -229,10 +229,8 @@ that next level abstraction is called a `deployment`. A deployment contains thre
 
 Take a look at [01-NginxDeployment.yaml](01-NginxDeployment.yaml)
 
-Change the namespace in this file to match the namespace you created, then execute it:
-
 ```shell
-kubectl apply -f 01-NginxDeployment.yaml -n jgb-namespace
+kubectl -n jgb-namespace apply -f 01-NginxDeployment.yaml
 ```
 
 Watch the progress of the deployment with the following:
@@ -271,8 +269,6 @@ outside of the cluster, we need a different type of service.
 
 Take a look at [02-NodePortService.yaml](02-NodePortService.yaml)
 
-Change the namespace in this file to match the namespace you created, then execute it:
-
 ```shell
 kubectl -n jgb-namespace apply -f 02-NodePortService.yaml
 ```
@@ -303,8 +299,6 @@ NodePort is supported in all Kubernetes clusters. It usually requires somekind o
 Some Kubernetes clusters support a service type of LoadBalancer which can be more useful.
 
 Take a look at [03-LoadBalancerService.yaml](03-LoadBalancerService.yaml)
-
-Change the namespace in this file to match the namespace you created, then execute it:
 
 ```shell
 kubectl -n jgb-namespace apply -f 03-LoadBalancerService.yaml
