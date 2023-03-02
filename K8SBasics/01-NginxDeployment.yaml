@@ -4,7 +4,6 @@ metadata:
   labels:
     app: nginx
   name: nginx
-  namespace: jgb-namespace
 spec:
   replicas: 3
   selector:

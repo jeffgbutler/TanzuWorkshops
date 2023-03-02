@@ -168,40 +168,40 @@ to an environment inside the cluster. One easy way to do this is to deploy a pod
 shell in the pod:
 
 ```shell
-kubectl run -it curl --image=curlimages/curl -n jgb-namespace -- sh
+kubectl run -it busybox --image=busybox -n jgb-namespace -- sh
 ```
 
-This will deploy a container named `curl` using the `curlimages/curl` image. It will open a shell session
+This will deploy a container named `busybox` using the `busybox` image. It will open a shell session
 in that container and attach your workstation to it. This is a very useful debugging technique!
 
 In this session you can try a couple of things:
 
 ```shell
-curl nginx
+wget -O- nginx
 ```
 
 1. Which nginx service will it query?  (the one in your namespace)
 
 ```shell
-curl nginx.jgb-namespace.svc.cluster.local
+wget -O- nginx.jgb-namespace.svc.cluster.local
 ```
 
 1. Can you curl an nginx service in someone else's namespace?
 
 ```shell
-curl 10.1.6.211
+wget -O- 10.1.6.211
 ```
 
-You can close your terminal session with `exit`. If you want to reattach to the `curl` pod, either of the
+You can close your terminal session with `exit`. If you want to reattach to the `busybox` pod, either of the
 following commands will work:
 
 If you want to reattach
 ```shell
-kubectl -n jgb-namespace attach curl -it
+kubectl -n jgb-namespace attach busybox -it
 ```
 
 ```shell
-kubectl -n jgb-namespace exec -it curl -- sh
+kubectl -n jgb-namespace exec -it busybox -- sh
 ```
 
 ## Cleanup
@@ -215,7 +215,7 @@ kubectl -n jgb-namespace delete pod nginx
 ```
 
 ```shell
-kubectl -n jgb-namespace delete pod curl
+kubectl -n jgb-namespace delete pod busybox
 ```
 ## Deployments
 
@@ -232,7 +232,7 @@ Take a look at [01-NginxDeployment.yaml](01-NginxDeployment.yaml)
 Change the namespace in this file to match the namespace you created, then execute it:
 
 ```shell
-kubectl apply -f 01-NginxDeployment.yaml
+kubectl apply -f 01-NginxDeployment.yaml -n jgb-namespace
 ```
 
 Watch the progress of the deployment with the following:
@@ -274,7 +274,7 @@ Take a look at [02-NodePortService.yaml](02-NodePortService.yaml)
 Change the namespace in this file to match the namespace you created, then execute it:
 
 ```shell
-kubectl apply -f 02-NodePortService.yaml
+kubectl -n jgb-namespace apply -f 02-NodePortService.yaml
 ```
 
 Find the port:
@@ -307,7 +307,7 @@ Take a look at [03-LoadBalancerService.yaml](03-LoadBalancerService.yaml)
 Change the namespace in this file to match the namespace you created, then execute it:
 
 ```shell
-kubectl apply -f 03-LoadBalancerService.yaml
+kubectl -n jgb-namespace apply -f 03-LoadBalancerService.yaml
 ```
 
 Find the external IP address:
@@ -335,7 +335,7 @@ We will deploy a very simple instance of Redis - only one pod with no replica se
 not for production!
 
 ```shell
-kubectl -n jgb-namespace run redis --image=redis:6.2.6
+kubectl -n jgb-namespace run redis --image=redis
 ```
 
 ```shell
@@ -346,18 +346,14 @@ kubectl -n jgb-namespace expose pod redis --type=ClusterIP --port=6379 --target-
 
 Take a look at [04-PaymentCalculatorDeployment.yaml](04-PaymentCalculatorDeployment.yaml)
 
-Change the namespace in this file to match the namespace you created, then execute it:
-
 ```shell
-kubectl apply -f 04-PaymentCalculatorDeployment.yaml
+kubectl -n jgb-namespace apply -f 04-PaymentCalculatorDeployment.yaml
 ```
 
 Take a look at [05-PaymentCalculatorService.yaml](05-PaymentCalculatorService.yaml)
 
-Change the namespace in this file to match the namespace you created, then execute it:
-
 ```shell
-kubectl apply -f 05-PaymentCalculatorService.yaml
+kubectl -n jgb-namespace apply -f 05-PaymentCalculatorService.yaml
 ```
 
 Once the external IP is provisioned, you can access the service in a browser: http://192.168.139.9 in my case.
