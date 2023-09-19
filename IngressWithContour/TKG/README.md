@@ -15,22 +15,30 @@ Change the ingress spec.host entry in [Kuard.yaml](Kuard.yaml) to match your DNS
 
 ## Deploy the App with Kubectl
 
-1. `kubectl apply -f Kuard.yaml`
+```shell
+kubectl apply -f Kuard.yaml
+```
 
 Once the ingress reconciles, you should be able to reach nginx at the host name you specify. For me it is http://kuard.tap.tanzuathome.net (or
 whatever host name you specified)
 
 Delete with the following:
 
-1. `kubectl delete -f Kuard.yaml`
+```shell
+kubectl delete -f Kuard.yaml
+```
 
 ## Deploy the App with Kapp
 
-1. `kapp deploy -a kuard -f Kuard.yaml`
+```shell
+kapp deploy -a kuard -f Kuard.yaml
+```
 
 Once the ingress reconciles, you should be able to reach nginx at the host name you specify. For me it is http://kuard.tap.tanzuathome.net (or
 whatever host name you specified)
 
 Delete with the following:
 
-1. `kapp delete -a kuard`
+```shell
+kapp delete -a kuard
+```
