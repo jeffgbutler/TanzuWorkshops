@@ -1,5 +1,8 @@
 # Ingress with Contour
 
+This page shows how to use a Kubernetes ingress controller to expose a service. In this case, we are
+using Contour (https://projectcontour.io/) as the ingress controller.
+
 ## Pre-Requisites
 
 - Kubernetes cluster with a LoadBalancer service available
