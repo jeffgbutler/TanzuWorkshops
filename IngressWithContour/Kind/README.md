@@ -15,6 +15,17 @@ Install Contour Ingress Controller
 kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
 ```
 
+## Deploy the App with Kubectl
+
+1. `kubectl apply -f Kuard.yaml`
+
+Once the ingress reconciles, you should be able to reach Kuard at the host name you specify. For me it is http://kuard.kuard-test.127-0-0-1.nip.io/ (or
+whatever host name you specified)
+
+Delete with the following:
+
+1. `kubectl delete -f Kuard.yaml`
+
 ## Deploy the App with Kapp
 
 Install a test application (you will need to change the ingress spec.host value in [Kuard.yaml](./Kuard.yaml) if you are
@@ -24,8 +35,8 @@ using a pre-existing cluster):
 kapp deploy -a kuard -f Kuard.yaml
 ```
 
-Make sure you can access Kuard at the following URL: http://kuard.kuard-test.127-0-0-1.nip.io/ (use a different URL if you changed
-the ingress host)
+Once the ingress reconciles, you should be able to reach Kuard at the host name you specify. For me it is http://kuard.kuard-test.127-0-0-1.nip.io/ (or
+whatever host name you specified)
 
 Once you have verified access to Kuard, uninstall it with this command:
 

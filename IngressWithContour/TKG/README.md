@@ -11,28 +11,26 @@ using Contour (https://projectcontour.io/) as the ingress controller.
 
 In my cluster, I have `*.tap.tanzuathome.net` pointing to 192.168.141.133.
 
-Change the host entry in [03_Ingress.yaml](03_Ingress.yaml) to match your DNS record.
+Change the ingress spec.host entry in [Kuard.yaml](Kuard.yaml) to match your DNS record.
 
 ## Deploy the App with Kubectl
 
-1. `kubectl apply -f 01_Deployment.yaml`
-2. `kubectl apply -f 02_Service.yaml`
-3. `kubectl apply -f 03_Ingress.yaml`
+1. `kubectl apply -f Kuard.yaml`
 
-Once the ingress reconciles, you should be able to reach nginx at the host name you specify. For me it is http://nginx.tap.tanzuathome.net.
+Once the ingress reconciles, you should be able to reach nginx at the host name you specify. For me it is http://kuard.tap.tanzuathome.net (or
+whatever host name you specified)
 
 Delete with the following:
 
-1. `kubectl delete -f 03_Ingress.yaml`
-2. `kubectl delete -f 02_Service.yaml`
-3. `kubectl delete -f 01_Deployment.yaml`
+1. `kubectl delete -f Kuard.yaml`
 
 ## Deploy the App with Kapp
 
-1. `kapp deploy -a nginx -f .`
+1. `kapp deploy -a kuard -f Kuard.yaml`
 
-Once the ingress reconciles, you should be able to reach nginx at the host name you specify. For me it is http://nginx.tap.tanzuathome.net.
+Once the ingress reconciles, you should be able to reach nginx at the host name you specify. For me it is http://kuard.tap.tanzuathome.net (or
+whatever host name you specified)
 
 Delete with the following:
 
-1. `kapp delete -a nginx`
+1. `kapp delete -a kuard`
