@@ -3,6 +3,9 @@
 This page shows how to use a Kubernetes ingress controller to expose a service. In this case, we are
 using Contour (https://projectcontour.io/) as the ingress controller deployed on a local cluster with Kind.
 
+This exercise uses the nip.io service for DNS to localhost. If you use a different DNS strategy, then
+change the ingress spec.host entry in [Kuard.yaml](Kuard.yaml) to match your DNS record.
+
 ## Pre-Requisites Create and Configure a Kind Cluster
 
 Create the cluster:
@@ -31,9 +34,6 @@ kubectl delete -f Kuard.yaml
 ```
 
 ## Deploy the App with Kapp
-
-Install a test application (you will need to change the ingress spec.host value in [Kuard.yaml](./Kuard.yaml) if you are
-using a pre-existing cluster):
 
 ```shell
 kapp deploy -a kuard -f Kuard.yaml
